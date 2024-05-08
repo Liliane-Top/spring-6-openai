@@ -1,8 +1,7 @@
 FROM eclipse-temurin:17-jdk-jammy as builder
 WORKDIR application
-ADD /target/spring-6-ai-intro-0.0.1-SNAPSHOT.jar ./
-#ADD maven/${project.build.finalName}.jar ./
-RUN java -Djarmode=layertools -jar spring-6-ai-intro-0.0.1-SNAPSHOT.jar extract
+ADD maven/${project.build.finalName}.jar ./
+RUN java -Djarmode=layertools -jar ${project.build.finalName}.jar extract
 
 FROM eclipse-temurin:17-jdk-jammy
 
