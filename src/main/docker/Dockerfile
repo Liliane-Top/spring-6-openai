@@ -1,0 +1,14 @@
+FROM eclipse-temurin:17-jdk-jammy as builder
+WORKDIR application
+ADD /target/spring-6-ai-intro-0.0.1-SNAPSHOT.jar ./
+#ADD maven/${project.build.finalName}.jar ./
+RUN java -Djarmode=layertools -jar spring-6-ai-intro-0.0.1-SNAPSHOT.jar extract
+
+FROM eclipse-temurin:17-jdk-jammy
+
+WORKDIR application
+COPY --from=builder application/dependencies/ ./
+COPY --from=builder application/spring-boot-loader/ ./
+COPY --from=builder application/snapshot-dependencies/ ./
+COPY --from=builder application/application/ ./
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "org.springframework.boot.loader.launch.JarLauncher"]
