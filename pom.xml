@@ -100,7 +100,6 @@
         <profile>
             <id>with-openai-api-key</id>
             <properties>
-                <!--suppress UnresolvedMavenProperty -->
                 <OPENAI_API_KEY>${env.OPENAI_API_KEY}</OPENAI_API_KEY>
             </properties>
         </profile>

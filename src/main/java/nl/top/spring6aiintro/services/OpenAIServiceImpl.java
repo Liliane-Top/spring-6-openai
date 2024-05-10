@@ -1,15 +1,15 @@
 package nl.top.spring6aiintro.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.top.spring6aiintro.model.Answer;
 import nl.top.spring6aiintro.model.CapitalRequest;
+import nl.top.spring6aiintro.model.CapitalResponse;
 import nl.top.spring6aiintro.model.Question;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.parser.BeanOutputParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -54,26 +54,22 @@ public class OpenAIServiceImpl implements OpenAIService {
     }
 
     @Override
-    public Answer getCapital(CapitalRequest capital) {
+    public CapitalResponse getCapital(CapitalRequest capital) {
+        var parser = new BeanOutputParser<>(CapitalResponse.class);
+        String format = parser.getFormat();
+
         PromptTemplate promptTemplate = new PromptTemplate(getCapitalPrompt);
-        Prompt prompt = promptTemplate.create(Map.of("stateOrCountry", capital.stateOrCountry()));
+        Prompt prompt = promptTemplate.create(
+                Map.of(
+                        "stateOrCountry", capital.stateOrCountry(),
+                        "format", format)
+        );
         ChatResponse response = chatClient.call(prompt);
-
-        System.out.println(response.getResult().getOutput().getContent());
-
-        String responseString;
-        try {
-            JsonNode jsonNode = objectMapper.readTree(response.getResult().getOutput().getContent());
-            responseString = jsonNode.get("answer").asText();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return new Answer(responseString);
+        return parser.parse(response.getResult().getOutput().getContent());
     }
 
     @Override
     public Answer getCapitalWithInfo(CapitalRequest capitalRequest) {
-        System.out.println("I was called");
         PromptTemplate promptTemplate = new PromptTemplate(getGetCapitalPromptWithInfo);
         Prompt prompt = promptTemplate.create(Map.of("stateOrCountry", capitalRequest.stateOrCountry()));
         ChatResponse response = chatClient.call(prompt);
