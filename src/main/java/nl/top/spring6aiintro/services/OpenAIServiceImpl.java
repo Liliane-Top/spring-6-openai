@@ -1,10 +1,7 @@
 package nl.top.spring6aiintro.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.top.spring6aiintro.model.Answer;
-import nl.top.spring6aiintro.model.CapitalRequest;
-import nl.top.spring6aiintro.model.CapitalResponse;
-import nl.top.spring6aiintro.model.Question;
+import nl.top.spring6aiintro.model.*;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -60,19 +57,24 @@ public class OpenAIServiceImpl implements OpenAIService {
 
         PromptTemplate promptTemplate = new PromptTemplate(getCapitalPrompt);
         Prompt prompt = promptTemplate.create(
-                Map.of(
-                        "stateOrCountry", capital.stateOrCountry(),
-                        "format", format)
-        );
+                Map.of("stateOrCountry", capital.stateOrCountry(),
+                        "format", format));
         ChatResponse response = chatClient.call(prompt);
         return parser.parse(response.getResult().getOutput().getContent());
     }
 
     @Override
-    public Answer getCapitalWithInfo(CapitalRequest capitalRequest) {
-        PromptTemplate promptTemplate = new PromptTemplate(getGetCapitalPromptWithInfo);
-        Prompt prompt = promptTemplate.create(Map.of("stateOrCountry", capitalRequest.stateOrCountry()));
+    public CapitalWithInfoResponse getCapitalWithInfo(CapitalRequest capitalRequest) {
+        var parser = new BeanOutputParser<>(CapitalWithInfoResponse.class);
+        String format = parser.getFormat();
+
+        PromptTemplate promptTemplate = new PromptTemplate(getCapitalPrompt);
+        Prompt prompt = promptTemplate.create(
+                Map.of("stateOrCountry", capitalRequest.stateOrCountry(),
+                        "format", format));
         ChatResponse response = chatClient.call(prompt);
-        return new Answer(response.getResult().getOutput().getContent());
+        System.out.println("response is: " + response.getResult().getOutput().getContent());
+
+        return parser.parse(response.getResult().getOutput().getContent());
     }
 }

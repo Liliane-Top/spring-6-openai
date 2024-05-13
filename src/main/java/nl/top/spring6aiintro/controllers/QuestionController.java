@@ -1,9 +1,6 @@
 package nl.top.spring6aiintro.controllers;
 
-import nl.top.spring6aiintro.model.Answer;
-import nl.top.spring6aiintro.model.CapitalRequest;
-import nl.top.spring6aiintro.model.CapitalResponse;
-import nl.top.spring6aiintro.model.Question;
+import nl.top.spring6aiintro.model.*;
 import nl.top.spring6aiintro.services.OpenAIService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +26,7 @@ public class QuestionController {
     }
 
     @PostMapping("/capitalWithInfo")
-    public Answer getCapitalWithInfo(@RequestBody CapitalRequest capitalRequest) {
+    public CapitalWithInfoResponse getCapitalWithInfo(@RequestBody CapitalRequest capitalRequest) {
         return this.openAIService.getCapitalWithInfo(capitalRequest);
     }
 
