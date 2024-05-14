@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ai-intro
+  name: ai-intro
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-intro
+  template:
+    metadata:
+      labels:
+        app: ai-intro
+    spec:
+      containers:
+      - name: spring-6-ai-intro
+        image: toppertje1966/spring-6-ai-intro
+        resources: {}
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-key-secret
+              key: API_KEY

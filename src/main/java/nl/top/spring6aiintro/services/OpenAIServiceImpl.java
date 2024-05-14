@@ -72,6 +72,7 @@ public class OpenAIServiceImpl implements OpenAIService {
         Prompt prompt = promptTemplate.create(
                 Map.of("stateOrCountry", capitalRequest.stateOrCountry(),
                         "format", format));
+        System.out.println("prompt looks like this :" + prompt);
         ChatResponse response = chatClient.call(prompt);
         System.out.println("response is: " + response.getResult().getOutput().getContent());
 
