@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: spring-6-ai-intro
-        image: toppertje1966/spring-6-ai-intro
+        image: toppertje1966/spring-6-ai-intro:v2
         resources: {}
         env:
         - name: OPENAI_API_KEY
