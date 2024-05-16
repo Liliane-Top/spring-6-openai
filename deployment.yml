@@ -19,8 +19,10 @@ spec:
         image: toppertje1966/spring-6-ai-intro:v2
         resources: {}
         env:
+        - name: LOGGING_LEVEL_NL_TOP_SPRING6AIINTRO
+          value: info
         - name: OPENAI_API_KEY
           valueFrom:
-            secretKeyRef:
-              name: api-key-secret
-              key: API_KEY
+              secretKeyRef:
+                name: api-key-secret
+                key: API_KEY
