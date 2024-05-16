@@ -26,3 +26,11 @@ spec:
               secretKeyRef:
                 name: api-key-secret
                 key: API_KEY
+        - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED
+          value: "true"
+        - name: MANAGEMENT_HEALTH_READINESS_STATE_ENABLED
+          value: "true"
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /actuator/health/readiness
